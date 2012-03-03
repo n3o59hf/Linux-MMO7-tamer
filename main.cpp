@@ -31,9 +31,12 @@ int findDevice(int PROTOCOL,struct usb_device *device)
             cout << dev << endl;
             if (dev->config->interface->altsetting->bInterfaceProtocol==PROTOCOL)
             {
-                dbus=bus;
-                found=true;
-                break;
+                if (dev->descriptor.idVendor == MOUSE_MANUFACTURER)
+                {
+                    dbus=bus;
+                    found=true;
+                    break;
+                }
             }
         }//end of devices loop
     }//end of busses loop
@@ -49,7 +52,7 @@ void printInfo(struct usb_device * dev)
     printf("Report Length : %d\n",dev->descriptor.bLength);
     printf("Decriptor Type : %d\n",dev->descriptor.bDescriptorType);
     printf("End Points : %d\n",dev->config->interface->altsetting->bNumEndpoints);
-    printf("Interface Class : %dn",dev->config->interface->altsetting->bInterfaceClass);
+    printf("Interface Class : %d\n",dev->config->interface->altsetting->bInterfaceClass);
     printf("Protocol : %d\n",dev->config->interface->altsetting->bInterfaceProtocol);
     printf("Interface Number: %d\n",dev->config->interface->altsetting->bInterfaceNumber);
     printf("Device Filename : %s\n",dev->filename);
@@ -59,15 +62,18 @@ void printInfo(struct usb_device * dev)
 int main(int argc, char *argv[])
 {
 
-    if (!initMouseEmu()) {
+    if (!initMouseEmu())
+    {
         printf("Failure to enable mouseEmu... Exiting...\n");
         exit(1);
     }
+
     struct usb_device devx;
     struct usb_device * dev;
     char *buf;
     int n,x,r;
     char string[PACKET_SIZE];
+
     bool found=false;
     usb_dev_handle *fdev;
     usb_set_debug(DEBUG_LEVEL);
@@ -83,7 +89,7 @@ int main(int argc, char *argv[])
     dev = &devx;
 
 
-    cout << "Now we are dealing with device from vendor ID : "<< dev->descriptor.idVendor << " " << dev->descriptor.idVendor << endl;
+//    cout << "Now we are dealing with device from vendor ID : "<< dev->descriptor.idVendor << " " << dev->descriptor.idVendor << endl;
     cout << "Trying to open the device..." << endl;
     if (fdev=usb_open(dev)) cout << "Device opened successfully" << endl; //Here we open the device , just like fopen
     else
@@ -136,7 +142,7 @@ int main(int argc, char *argv[])
         }
         if (r == PACKET_SIZE)
         {
-            mouseButton(string[BUTTON_OFFSET]);
+            mouseButton(string+BUTTON_OFFSET);
             mouseMove(string[X_OFFSET],string[Y_OFFSET]);
         }
 //Not needed for mouse

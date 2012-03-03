@@ -6,10 +6,11 @@ int scr;
 Window win;
 unsigned int width, height;
 
-char oldButtons = 0;
+char * oldButtons;
 
 
-bool initMouseEmu() {
+bool initMouseEmu()
+{
     Window ret_win;
     int dX, dY;
     unsigned int border_width, depth;
@@ -33,33 +34,62 @@ bool initMouseEmu() {
         return false;
     }
 
+    oldButtons = new char[BUTTON_COUNT / 8 + (BUTTON_COUNT % 8 > 0?1:0)];
+    for (int i = 0; i < BUTTON_COUNT; i+=8)
+    {
+        oldButtons[i/8]=0;
+    }
 }
 
 
-void mouseButton(char buttons)
+void mouseButton(char * buttons)
 {
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < BUTTON_COUNT; i++)
     {
         int button = i + 1;
 
-        if (buttons & (0x01<<i) && !(oldButtons&(0x01<<i)))
+        if (buttons[i/8] & (0x01<<(i%8)) && !(oldButtons[i/8]&(0x01<<(i%8))))
         {
             printf("button %d click\n", button);
-            XTestFakeButtonEvent(dpy, button, True, CurrentTime);
+            switch (getFunction(button))
+            {
+            case FUNCTION_MOUSE_CLICK:
+                XTestFakeButtonEvent(dpy, getKeyCode(button), True, CurrentTime);
+                break;
+            case FUNCTION_KEY_CODE:
+                int keycode = XKeysymToKeycode(dpy,getKeySym(button));
+                XTestFakeKeyEvent(dpy, keycode, True, CurrentTime);
+                break;
+            }
         }
-        if (!(buttons & (0x01<<i)) && oldButtons&(0x01<<i))
+        if (!(buttons[i/8] & (0x01<<(i%8) )) && oldButtons[i/8]&(0x01<<(i%8)))
         {
             printf("button %d unclick\n",button);
-            XTestFakeButtonEvent(dpy, button, False, CurrentTime);
+            switch (getFunction(button))
+            {
+            case FUNCTION_MOUSE_CLICK:
+                XTestFakeButtonEvent(dpy, getKeyCode(button), False, CurrentTime);
+                break;
+            case FUNCTION_KEY_CODE:
+                int keycode = XKeysymToKeycode(dpy,getKeySym(button));
+                XTestFakeKeyEvent(dpy, keycode, False, CurrentTime);
+                break;
+            }
         }
     }
 
     XFlush(dpy);
-    oldButtons = buttons;
+
+    for (int i = 0; i < BUTTON_COUNT; i+=8)
+    {
+        oldButtons[i/8]=buttons[i/8];
+    }
 }
 
-void mouseMove(char x, char y) {
-    if (x != 0 || y != 0) {
+void mouseMove(char x, char y)
+{
+    if (x != 0 || y != 0)
+    {
         int dX = x;
         int dY = y;
         XTestFakeRelativeMotionEvent(dpy, dX, dY, 0);

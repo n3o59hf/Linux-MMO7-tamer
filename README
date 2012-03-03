@@ -1,6 +1,6 @@
 Project not yet ready for day-to-day usage.
 
-Depencies: libXtst, libusb
+Depencies: libXtst, libusb, libxt
 
 Compilation: make
 
