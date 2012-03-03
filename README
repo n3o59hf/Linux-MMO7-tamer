@@ -1,0 +1,7 @@
+Project not yet ready for day-to-day usage.
+
+Depencies: libXtst, libusb
+
+Compilation: make
+
+Usage: ./mouse or sudo ./mouse (depends on permissions)
