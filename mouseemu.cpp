@@ -95,3 +95,24 @@ void mouseMove(char x, char y)
         XTestFakeRelativeMotionEvent(dpy, dX, dY, 0);
     }
 }
+
+void mouseScroll(char x)
+{
+	if (x != 0)
+	{
+		int dX = x;
+		//printf("scroll %d", dX);
+		if (x>0)
+		{ 
+			XTestFakeButtonEvent(dpy, getKeyCode(4), True, CurrentTime);
+			XTestFakeButtonEvent(dpy, getKeyCode(4), False, CurrentTime);
+			// scroll up
+        }       
+		else
+		{
+			XTestFakeButtonEvent(dpy, getKeyCode(5), True, CurrentTime);
+			XTestFakeButtonEvent(dpy, getKeyCode(5), False, CurrentTime);
+			// scroll down
+        }       
+	}
+}

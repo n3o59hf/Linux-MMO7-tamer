@@ -17,6 +17,8 @@ int getKeyCode(int key) {
     if (key == 1) return 1;
     if (key == 2) return 3;
     if (key == 3) return 2;
+    if (key == 4) return 4;
+    if (key == 5) return 5;
     return 0;
 }
 int getKeySym(int key)

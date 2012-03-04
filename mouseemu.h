@@ -16,5 +16,6 @@
 bool initMouseEmu();
 void mouseButton(char * buttons);
 void mouseMove(char x, char y);
+void mouseScroll(char x);
 
 #endif

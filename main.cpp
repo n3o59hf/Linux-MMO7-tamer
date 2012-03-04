@@ -144,6 +144,7 @@ int main(int argc, char *argv[])
         {
             mouseButton(string+BUTTON_OFFSET);
             mouseMove(string[X_OFFSET],string[Y_OFFSET]);
+            mouseScroll(string[SCROLL_OFFSET]);
         }
 //Not needed for mouse
 //        usb_clear_halt(fdev,0x81); //I need to reset the device node because of some devices (usually keyboards) keep sending the same bytes even after releasing the key !

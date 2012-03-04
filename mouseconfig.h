@@ -9,5 +9,6 @@
 #define BUTTON_COUNT 24
 #define X_OFFSET 3
 #define Y_OFFSET 5
+#define SCROLL_OFFSET 7
 
 #endif
