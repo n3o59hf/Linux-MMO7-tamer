@@ -1,7 +1,19 @@
 Project not yet ready for day-to-day usage.
 
-Depencies: libXtst, libusb, libxt
+Dependencies: libXtst, libusb, libxt
 
 Compilation: make
 
 Usage: ./mouse or sudo ./mouse (depends on permissions)
+
+
+Debian / Ubuntu: 
+
+Dependencies: libxtst-dev libxt-dev libusb-dev
+
+```
+sudo apt-get install -y libxtst-dev libxt-dev libusb-dev
+sudo make
+sudo ln -s $(pwd)/mouse /usr/local/bin/mmo7
+mmo7
+```
